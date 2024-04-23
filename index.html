@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>API POST</title>
+  </head>
+  <body>
+    <form id="formsubmit">
+      <input
+        type="text"
+        placeholder="enter your text"
+        id="userinput"
+        name="userinput"
+        required
+      />
+      <br /><br />
+      <button type="submit">Send Data</button>
+    </form>
+
+    <div id="responsedata"></div>
+    <script>
+      document
+        .getElementById("formsubmit")
+        .addEventListener("submit", (event) => {
+          event.preventDefault();
+
+          let data = document.getElementById("userinput").value;
+          console.log(data);
+
+          var url = "https://chimpu.xyz/api/post.php";
+
+          fetch(url, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/x-www-form-urlencoded",
+            },
+            body: "data=" + encodeURIComponent(data),
+          })
+            .then((response) => {
+              if (!response.ok) {
+                throw new Error("network response not ok");
+              }
+              console.log("headers",response.headers)
+              let responseData = response.headers.get("Custom-Data");
+              console.log("Data received from headers:", responseData);
+              document.getElementById("responsedata").innerText =
+                "Data received from headers: " + responseData;
+            })
+            .catch((err) => {
+              console.error("Probelm to fetch response", err);
+            });
+        });
+    </script>
+  </body>
+</html>
