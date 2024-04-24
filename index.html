@@ -1,56 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>API POST</title>
-  </head>
-  <body>
-    <form id="formsubmit">
-      <input
-        type="text"
-        placeholder="enter your text"
-        id="userinput"
-        name="userinput"
-        required
-      />
-      <br /><br />
-      <button type="submit">Send Data</button>
-    </form>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <input type="text" id="phoneNumber" name="phoneNumber" /><br /><br />
+  <button onclick="postData()">Submit</button>
 
-    <div id="responsedata"></div>
-    <script>
-      document
-        .getElementById("formsubmit")
-        .addEventListener("submit", (event) => {
-          event.preventDefault();
+  <div id="headers"></div>
+  <script>
+    function postData() {
+      var phoneNumber = document.getElementById("phoneNumber").value;
+      console.log("phone number", phoneNumber);
+      var url = "https://chimpu.xyz/api/post.php";
 
-          let data = document.getElementById("userinput").value;
-          console.log(data);
+      var xhr = new XMLHttpRequest();
 
-          var url = "https://chimpu.xyz/api/post.php";
+      xhr.onload = function () {
+        if (xhr.status >= 200 && xhr.status < 300) {
+          var headers = xhr.getAllResponseHeaders();
+          console.log("headers", headers);
+          document.getElementById("headers").innerText = headers;
+        } else {
+          alert("Request failed. Status: " + xhr.status);
+        }
+      };
 
-          fetch(url, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/x-www-form-urlencoded",
-            },
-            body: "data=" + encodeURIComponent(data),
-          })
-            .then((response) => {
-              if (!response.ok) {
-                throw new Error("network response not ok");
-              }
-              console.log("headers",response.headers)
-              let responseData = response.headers.get("Custom-Data");
-              console.log("Data received from headers:", responseData);
-              document.getElementById("responsedata").innerText =
-                "Data received from headers: " + responseData;
-            })
-            .catch((err) => {
-              console.error("Probelm to fetch response", err);
-            });
-        });
-    </script>
-  </body>
+      xhr.open("POST", url, true);
+
+      xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+      xhr.setRequestHeader("PhoneNumber", phoneNumber); 
+
+      xhr.send();
+    }
+  </script>
+</body>
 </html>
